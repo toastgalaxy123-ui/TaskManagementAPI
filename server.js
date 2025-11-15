@@ -8,7 +8,7 @@ dotenv.config();
 
 //2. Initialize Express App
 const app = express();
-const PORT = process.env.PORT || 5000;
+
 
 //3. Middleware
 //Enable express to parse JSON bodies
@@ -29,12 +29,9 @@ const connectDB = async() => {
 //Connect to DB
 connectDB();
 
-//5. Basic Route for Testing 
-app.get('/', (req, res) => {
-    console.log('Server running on port ${PORT}');
-    console.log('Access at http://localhost:${PORT}');
-});
 
+// Import Task Routes
+const taskRoutes = require('./routes/taskRoutes');
 // Import Auth Routes
 const authRoutes = require('./routes/authRoutes');
 // Import error handling 
@@ -42,5 +39,17 @@ const { errorHandler} = require('./middleware/errorMiddleware');
 // Mount Auth Routes
 // All routes in authRoutes.js will be prefixed with /api/auth
 app.use('/api/auth', authRoutes);
+// Mount Task Routes
+// All routes in taskRoutes.js will be prefixed with /api/tasks
+app.use('/api/tasks', taskRoutes);
+
 // Error Handling Middleware
 app.use(errorHandler);
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    // These logs confirm the server successfully bound to the port
+    console.log(`Express server listening on port ${PORT}`);
+    console.log(`Access the API at http://localhost:${PORT}`);
+});
